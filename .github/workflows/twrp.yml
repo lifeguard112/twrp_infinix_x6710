@@ -1,0 +1,59 @@
+name: Build TWRP
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: TWRP Derle
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 1024
+          swap-size-mb: 10240
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-core gnupg flex bison build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip jq bc ccache liblz4-tool lzop rsync schedtool squashfs-tools
+          mkdir ~/bin
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          chmod a+x ~/bin/repo
+          sudo ln -sf ~/bin/repo /usr/bin/repo
+          
+      - name: Initialize TWRP Workspace
+        run: |
+          mkdir workspace
+          cd workspace
+          git config --global user.name "TWRP Builder"
+          git config --global user.email "twrp@example.com"
+          repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
+          repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+          
+      - name: Prepare Device Tree
+        run: |
+          mkdir -p workspace/device/infinix
+          unzip X6710_device_tree.zip -d workspace/device/infinix/
+          
+      - name: Build TWRP
+        run: |
+          cd workspace
+          export ALLOW_MISSING_DEPENDENCIES=true
+          source build/envsetup.sh
+          lunch twrp_X6710-eng
+          mka vendorbootimage
+          
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: TWRP-X6710
+          path: workspace/out/target/product/X6710/vendor_boot.img
