@@ -43,8 +43,8 @@ jobs:
           
       - name: Prepare Device Tree
         run: |
-          mkdir -p workspace/device/infinix
-          unzip X6710_device_tree.zip -d workspace/device/infinix/
+          mkdir -p workspace/device/infinix/X6710
+          cp -r Android.bp Android.mk AndroidProducts.mk BoardConfig.mk README.md bootctrl device.mk prebuilt recovery recovery.fstab twrp_X6710.mk vendor.prop workspace/device/infinix/X6710/
           
       - name: Build TWRP
         run: |
