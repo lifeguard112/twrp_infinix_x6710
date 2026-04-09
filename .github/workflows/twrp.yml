@@ -39,7 +39,7 @@ jobs:
           cd workspace
           git config --global user.name "TWRP Builder"
           git config --global user.email "twrp@example.com"
-          repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
+          repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1 --depth=1
           repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
           
       - name: Prepare Device Tree
@@ -53,10 +53,10 @@ jobs:
           export ALLOW_MISSING_DEPENDENCIES=true
           source build/envsetup.sh
           lunch twrp_X6710-eng
-          mka vendorbootimage
+          mka vendorbootimage -j$(nproc --all)
           
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-X6710
+          name: TWRP-X6710-${{ github.run_id }}
           path: workspace/out/target/product/X6710/vendor_boot.img

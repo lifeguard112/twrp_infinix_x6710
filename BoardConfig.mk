@@ -174,13 +174,15 @@ TW_MAX_BRIGHTNESS := 2047
 TW_DEFAULT_BRIGHTNESS := 1200
 TW_NO_SCREEN_BLANK := true
 TW_INCLUDE_RESETPROP := true
-TW_INCLUDE_LIBRESETPROP :=true
+TW_INCLUDE_LIBRESETPROP := true
 TW_INCLUDE_FASTBOOTD := true
 TW_INCLUDE_TZDATA := true
 TW_EXCLUDE_APEX := true
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_HAS_MTP := true
 TW_HAS_NO_RECOVERY_PARTITION := true
+TW_STATUS_ICONS_ALIGN := left
+TW_CUSTOM_CPU_TEMP_PATH := /sys/class/thermal/thermal_zone0/temp
 
 # Vendor Boot
 # Making sure recovery build don't have kernel in it--well, no kernel at all in tree anyway... LOL!

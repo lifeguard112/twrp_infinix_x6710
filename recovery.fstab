@@ -1,13 +1,35 @@
 # Android File-System Tab
+# Infinix Note 30 VIP (X6710)
 
 # Logical Partition
 system          /system         erofs       ro      wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
-system          /system         ext4        ro      wait,slotselect,avb=vbmeta_system,logical,first_stage_mount
 vendor          /vendor         erofs       ro      wait,slotselect,avb,logical,first_stage_mount
 product         /product        erofs       ro      wait,slotselect,avb,logical,first_stage_mount
 system_ext      /system_ext     erofs       ro      wait,slotselect,avb,logical,first_stage_mount
 
-# Data Partition
-/dev/block/by-name/metadata         /metadata       ext4    noatime,nosuid,nodev,discard    wait,check,formattable,first_stage_mount
-/dev/block/by-name/userdata         /data           f2fs    noatime,nosuid,nodev,discard,noflush_merge,fsync_mode=nobarrier,reserve_root=134217,resgid=1065,inlinecrypt     wait,check,formattable,quota,latemount,resize,reservedsize=128m,checkpoint=fs,fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized,keydirectory=/metadata/vold/metadata_encryption,fsverity
-/dev/block/by-name/misc             /misc           emmc    defaults    defaults
+# Physical Partitions (Common)
+/dev/block/by-name/metadata     /metadata       ext4    noatime,nosuid,nodev,discard    wait,check,formattable,first_stage_mount
+/dev/block/by-name/userdata     /data           f2fs    noatime,nosuid,nodev,discard,noflush_merge,fsync_mode=nobarrier,reserve_root=134217,resgid=1065,inlinecrypt     wait,check,formattable,quota,latemount,resize,reservedsize=128m,checkpoint=fs,fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized,keydirectory=/metadata/vold/metadata_encryption,fsverity
+/dev/block/by-name/misc         /misc           emmc    defaults    defaults
+
+# Flashable Images & Backups
+/dev/block/by-name/boot         /boot           emmc    defaults    first_stage_mount,slotselect,display="Boot",backup=1,flashimg=1
+/dev/block/by-name/vendor_boot  /vendor_boot    emmc    defaults    first_stage_mount,slotselect,display="Vendor Boot",backup=1,flashimg=1
+/dev/block/by-name/dtbo         /dtbo           emmc    defaults    first_stage_mount,slotselect,display="DTBO",backup=1,flashimg=1
+/dev/block/by-name/vbmeta        /vbmeta         emmc    defaults    first_stage_mount,slotselect,display="VBMeta",backup=1,flashimg=1
+/dev/block/by-name/vbmeta_system /vbmeta_system  emmc    defaults    first_stage_mount,slotselect,display="VBMeta System",backup=1,flashimg=1
+/dev/block/by-name/vbmeta_vendor /vbmeta_vendor  emmc    defaults    first_stage_mount,slotselect,display="VBMeta Vendor",backup=1,flashimg=1
+
+# IMEI & Security (CRITICAL BACKUP)
+/dev/block/by-name/nvram        /nvram          emmc    defaults    display="NVRAM",backup=1
+/dev/block/by-name/nvdata       /nvdata         ext4    defaults    display="NVData",backup=1
+/dev/block/by-name/nvcfg        /nvcfg          ext4    defaults    display="NVCfg",backup=1
+/dev/block/by-name/persist      /persist        ext4    defaults    display="Persist",backup=1
+/dev/block/by-name/proinfo      /proinfo        emmc    defaults    display="Proinfo",backup=1
+/dev/block/by-name/protect1     /protect1       ext4    defaults    display="Protect_F",backup=1
+/dev/block/by-name/protect2     /protect2       ext4    defaults    display="Protect_S",backup=1
+/dev/block/by-name/seccfg       /seccfg         emmc    defaults    display="Seccfg",backup=1
+
+# External Storage
+/external_sd    vfat        /dev/block/mmcblk0p1    /dev/block/mmcblk0  flags=display="MicroSD";storage;wipeui;removable
+/usb_otg        vfat        /dev/block/sdb1         /dev/block/sdb      flags=display="USB-OTG";storage;wipeui;removable
