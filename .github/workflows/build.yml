@@ -1,0 +1,32 @@
+name: Build TWRP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Repo'yu İndir (Checkout)
+      uses: actions/checkout@v3
+
+    - name: TWRP Builder'ı Başlat
+      uses: TeamWin/Action-TWRP-Builder@main
+      with:
+        GKI: 'false'
+        MAKE_TARGET: 'vendorbootimage'
+        MANIFEST_BRANCH: 'twrp-12.1'
+        MANIFEST_URL: 'https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git'
+        DEVICE_TREE_URL: 'https://github.com/lifeguard112/twrp_infinix_x6710.git'
+        DEVICE_TREE_BRANCH: 'main'
+        DEVICE_PATH: 'device/infinix/X6710'
+        DEVICE_NAME: 'X6710'
+        
+    - name: Hazır Dosyayı Yükle
+      uses: actions/upload-artifact@v3
+      with:
+        name: TWRP_X6710_Duzeltilmis
+        path: workspace/out/target/product/X6710/vendor_boot.img
