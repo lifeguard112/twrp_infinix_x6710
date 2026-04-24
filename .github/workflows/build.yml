@@ -11,7 +11,7 @@ jobs:
       
     steps:
     - name: Checkout Device Tree
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Clean up disk space
       run: |
@@ -51,7 +51,7 @@ jobs:
         mka vendorbootimage
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: TWRP_X6710_Duzeltilmis
         path: workspace/out/target/product/X6710/vendor_boot.img
